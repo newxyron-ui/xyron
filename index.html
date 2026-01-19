@@ -1,120 +1,158 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Xyron | 2026 Calendar</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f1f5f9;
-            margin: 0;
-        }
-        header {
-            background: #0f172a;
-            color: white;
-            text-align: center;
-            padding: 20px;
-        }
-        .calendar {
-            max-width: 900px;
-            margin: 30px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-        }
-        h2 {
-            text-align: center;
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
-        }
-        .day {
-            background: #e5e7eb;
-            padding: 10px;
-            min-height: 80px;
-            border-radius: 6px;
-        }
-        .head {
-            background: #2563eb;
-            color: white;
-            text-align: center;
-            font-weight: bold;
-        }
-        .holiday {
-            background: #fee2e2;
-            border: 2px solid #dc2626;
-        }
-        footer {
-            text-align: center;
-            padding: 15px;
-            color: #475569;
-        }
-    </style>
+<meta charset="UTF-8">
+<title>Xyron – Indian Calendar 2026</title>
+
+<style>
+body{
+  font-family:Segoe UI, Arial;
+  background:white;
+  margin:0;
+  padding:20px;
+  text-align:center;
+}
+
+h1{font-size:38px}
+
+#search{
+  width:320px;
+  padding:12px;
+  font-size:16px;
+  margin:10px auto 20px;
+}
+
+.calendar{
+  width:560px;
+  margin:0 auto;
+  padding:20px;
+  border-radius:16px;
+  box-shadow:0 15px 35px rgba(0,0,0,.15);
+  animation:fade .4s ease;
+}
+
+@keyframes fade{
+  from{opacity:0;transform:translateX(40px)}
+  to{opacity:1;transform:translateX(0)}
+}
+
+button{
+  padding:10px 18px;
+  font-size:16px;
+  margin:10px;
+  cursor:pointer;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th{
+  background:#f3f3f3;
+  padding:10px;
+}
+
+td{
+  border:1px solid #ddd;
+  padding:14px;
+  font-size:18px;
+}
+
+.event{
+  display:block;
+  font-size:11px;
+  color:#c1121f;
+}
+</style>
 </head>
+
 <body>
 
-<header>
-    <h1>Harshit Bhai</h1>
-    <p>India Calendar – 2026</p>
-</header>
+<h1>Xyron – Indian Calendar 2026</h1>
 
-<div class="calendar">
-    <h2>January 2026</h2>
+<input id="search" placeholder="Search date / month / holiday / birthday">
 
-    <div class="grid">
-        <div class="day head">Sun</div>
-        <div class="day head">Mon</div>
-        <div class="day head">Tue</div>
-        <div class="day head">Wed</div>
-        <div class="day head">Thu</div>
-        <div class="day head">Fri</div>
-        <div class="day head">Sat</div>
-
-        <div class="day"></div>
-        <div class="day"></div>
-        <div class="day"></div>
-        <div class="day"></div>
-        <div class="day">1</div>
-        <div class="day">2</div>
-        <div class="day">3</div>
-        <div class="day">4</div>
-
-        <div class="day">5</div>
-        <div class="day">6</div>
-        <div class="day">7</div>
-        <div class="day">8</div>
-        <div class="day">9</div>
-        <div class="day">10</div>
-        <div class="day">11</div>
-
-        <div class="day">12</div>
-        <div class="day">13</div>
-        <div class="day holiday">14<br><small>Republic Day Prep</small></div>
-        <div class="day">15</div>
-        <div class="day">16</div>
-        <div class="day">17</div>
-        <div class="day">18</div>
-
-        <div class="day">19</div>
-        <div class="day">20</div>
-        <div class="day">21</div>
-        <div class="day">22</div>
-        <div class="day">23</div>
-        <div class="day">24</div>
-        <div class="day holiday">26<br><small>Republic Day</small></div>
-
-        <div class="day">27</div>
-        <div class="day">28</div>
-        <div class="day">29</div>
-        <div class="day">30</div>
-        <div class="day">31</div>
-    </div>
+<div>
+  <button onclick="prev()">◀ Prev</button>
+  <button onclick="next()">Next ▶</button>
 </div>
 
-<footer>
-    © 2026 Xyron
-</footer>
+<div class="calendar" id="cal"></div>
+
+<script>
+const year = 2026;
+let current = 0;
+
+const months = [
+ "January","February","March","April","May","June",
+ "July","August","September","October","November","December"
+];
+
+// ALL HOLIDAYS + BIRTHDAYS
+const events = {
+ "January-1":"New Year",
+ "January-14":"Makar Sankranti",
+ "January-26":"Republic Day",
+
+ "March-8":"Holi",
+ "March-26":"🎂Editor Birthday",
+
+ "April-14":"Ambedkar Jayanti",
+
+ "August-15":"Independence Day",
+
+ "October-2":"Gandhi Jayanti",
+
+ "November-8":"Diwali",
+ "November-27":"🎂 Boss Birthday",
+
+ "December-25":"Christmas"
+};
+
+function render(){
+  const name = months[current];
+  const firstDay = new Date(year,current,1).getDay();
+  const days = new Date(year,current+1,0).getDate();
+
+  let html = `<h2>${name} ${year}</h2><table><tr>
+  <th>Sun</th><th>Mon</th><th>Tue</th>
+  <th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr><tr>`;
+
+  for(let i=0;i<firstDay;i++) html+="<td></td>";
+
+  for(let d=1; d<=days; d++){
+    const key = `${name}-${d}`;
+    html += `<td>${d}${events[key]?`<span class="event">${events[key]}</span>`:""}</td>`;
+    if((d+firstDay)%7===0) html+="</tr><tr>";
+  }
+
+  html += "</tr></table>";
+  document.getElementById("cal").innerHTML = html;
+}
+
+function next(){ current=(current+1)%12; render(); }
+function prev(){ current=(current+11)%12; render(); }
+
+// SMART SEARCH
+document.getElementById("search").addEventListener("input",e=>{
+  const v = e.target.value.toLowerCase();
+
+  months.forEach((m,i)=>{
+    if(m.toLowerCase().includes(v)) current=i;
+  });
+
+  Object.keys(events).forEach(k=>{
+    if(events[k].toLowerCase().includes(v) || k.split("-")[1]===v){
+      current = months.indexOf(k.split("-")[0]);
+    }
+  });
+
+  render();
+});
+
+render();
+</script>
 
 </body>
 </html>
